@@ -53,7 +53,6 @@ public class SaltoTatu implements ActionListener {
 
         // Cria as variáveis de saída
         // Distância que o jogador precisa correr, tempo de corrida e velocidade média test
-        System.out.println("teste");
         playerDistanceDescription = "Distância a percorrer (m): ";
         finalDistanceOutput = createTextField(playerDistanceDescription, 40, 150, 350, 30, false, false);
 
