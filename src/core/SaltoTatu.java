@@ -13,17 +13,17 @@ public class SaltoTatu implements ActionListener {
     // Variáveis globais
     JFrame frame;
     JButton playBtn, resetBtn;
-    JTextField initSpeedInput, angleInput, distanceInput,
-            finalDistanceOutput, timeOutput, speedOutput;
-    Double initSpeed, angle, distance;
-    String playerDistanceDescription, playerTimeDescription,
+    JTextField initSpeedInput, angleInput, tempoInput,
+            finaltempoOutput, timeOutput, speedOutput;
+    Double initSpeed, angle, tempo;
+    String playertempoDescription, playerTimeDescription,
             playerSpeedDescription;
 
     // Construtor
     SaltoTatu() {
 
         // Cria a caixa da calculadora.
-        frame = new JFrame("Calcula Velocidade Média do Jogador");
+        frame = new JFrame("Calcula Altura pulo");
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(430, 400);
@@ -42,8 +42,8 @@ public class SaltoTatu implements ActionListener {
         angleInput = createTextField("", 190, 60, 70, 30, true, true);
 
         // Distância
-        JLabel distanceText = createLabel("Distância (m):", 40, 95, 160, 30);
-        distanceInput = createTextField("", 190, 95, 70, 30, true, true);
+        JLabel tempoText = createLabel("Distância (m):", 40, 95, 160, 30);
+        tempoInput = createTextField("", 190, 95, 70, 30, true, true);
 
         // Botão para calcular
         playBtn = new JButton("Calcular");
@@ -52,9 +52,8 @@ public class SaltoTatu implements ActionListener {
         playBtn.setFocusable(false);
 
         // Cria as variáveis de saída
-        // Distância que o jogador precisa correr, tempo de corrida e velocidade média test
-        playerDistanceDescription = "Distância a percorrer (m): ";
-        finalDistanceOutput = createTextField(playerDistanceDescription, 40, 150, 350, 30, false, false);
+        playertempoDescription = "Distância a percorrer (m): ";
+        finaltempoOutput = createTextField(playertempoDescription, 40, 150, 350, 30, false, false);
 
         playerTimeDescription = "Tempo de corrida (s): ";
         timeOutput = createTextField(playerTimeDescription, 40, 190, 350, 30, false, false);
@@ -73,9 +72,9 @@ public class SaltoTatu implements ActionListener {
         frame.add(initSpeedInput);
         frame.add(angleText);
         frame.add(angleInput);
-        frame.add(distanceText);
-        frame.add(distanceInput);
-        frame.add(finalDistanceOutput);
+        frame.add(tempoText);
+        frame.add(tempoInput);
+        frame.add(finaltempoOutput);
         frame.add(timeOutput);
         frame.add(speedOutput);
         frame.add(playBtn);
@@ -97,31 +96,22 @@ public class SaltoTatu implements ActionListener {
                 // Transforma valores do tipo string para double
                 initSpeed = Double.parseDouble(initSpeedInput.getText());
                 angle = Double.parseDouble(angleInput.getText());
-                distance = Double.parseDouble(distanceInput.getText());
+                tempo = Double.parseDouble(tempoInput.getText());
 
                 // **** Restrições das variáveis ****
                 if (initSpeed < 0) {
-                    // Velocidade inicial da bola não pode ser negativa
-                    errorMsg("A velocidade inicial deve ser um número positivo.", "Erro de entrada");
+                    // Altura 
+                    errorMsg("A altura deve ser positiva.", "Erro de entrada");
                     return;
                 }
-                if (initSpeed > 45) {
-                    // Velocidade inicial a bola não pode ser maior que 45m/s pois já é quase um
-                    // recorde.
-                    errorMsg("A velocidade inicial deve ser menor que 45 m/s (162 Km/h).", "Erro de entrada");
-                    return;
-                }
-
-                // O angulo não pode ser negativo nem maior que 180º pois isso indicaria uma
-                // direção para dentro da grama!
-                if (angle < 0 || angle > 180) {
-                    errorMsg("O angulo deve ser maior que 0º e menor que 180º.", "Erro de Entrada");
+                if (initSpeed > 10) {
+                    // altura não pode ser maior que 10, pois é impossivel algo chegar tão alto em um salto
+                    errorMsg("A altura deve ser menor que 10m.", "Erro de entrada");
                     return;
                 }
 
-                // As dimensões do campo de futebol são aprox. 105m x 68m e a diagonal mede
-                // 125m. Essa a maior distância dentro do campo.
-                if (Math.abs(distance) > 125) {
+           
+                if (Math.abs(tempo) > 125) {
                     errorMsg("A maior distância em módulo que os jogadores podem ter é 125m.", "Erro de Entrada");
                     return;
                 }
@@ -133,12 +123,12 @@ public class SaltoTatu implements ActionListener {
 
                 // Calcula a distancia que o jogador deve correr para alcançar a bola antes de
                 // tocar no chão
-                Double playerDistance = calculatePlayerDistanceOfTheBall(initSpeed, angle, time);
-                String playerDistanceString = createVetorString(playerDistanceDescription, playerDistance);
-                finalDistanceOutput.setText(playerDistanceString);
+                Double playertempo = calculatetempoalturamax(initSpeed, angle, time);
+                String playertempoString = createVetorString(playertempoDescription, playertempo);
+                finaltempoOutput.setText(playertempoString);
 
                 // Calcula a velocidade média do jogador
-                Double speed = playerDistance / time;
+                Double speed = playertempo / time;
                 String speedText = createVetorString(playerSpeedDescription, speed);
                 speedOutput.setText(speedText);
 
@@ -159,15 +149,14 @@ public class SaltoTatu implements ActionListener {
             // Limpar as variáveis
             initSpeed = null;
             angle = null;
-            distance = null;
+            tempo = null;
 
             // Limpar as caixas de texto
             initSpeedInput.setText("");
-            angleInput.setText("");
-            distanceInput.setText("");
+            tempoInput.setText("");
 
             timeOutput.setText("");
-            finalDistanceOutput.setText("");
+            finaltempoOutput.setText("");
             speedOutput.setText("");
         }
     }
@@ -203,12 +192,12 @@ public class SaltoTatu implements ActionListener {
         return time;
     }
 
-    // Método: Calcula a distancia que o jogador deve correr para alcançar a bola.
-    private Double calculatePlayerDistanceOfTheBall(Double v0, Double teta, Double t) {
+    // Método: Calcula o tempo em que o animal estara na maior alturar
+    private Double calculatetempoaltmax(Double v0, Double teta, Double t) {
         double ballFinalPos = v0 * Math.cos(Math.toRadians(teta)) * t;
-        double playerDistance = ballFinalPos - distance;
+        double playertempo = ballFinalPos - tempo;
 
-        return playerDistance;
+        return playertempo;
     }
 
     // Método: Mostra a mensagem de erro.
