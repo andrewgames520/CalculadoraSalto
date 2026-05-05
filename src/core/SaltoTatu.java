@@ -52,7 +52,7 @@ public class SaltoTatu implements ActionListener {
         playBtn.setFocusable(false);
 
         // Cria as variáveis de saída
-        // Distância que o jogador precisa correr, tempo de corrida e velocidade média
+        // Distância que o jogador precisa correr, tempo de corrida e velocidade média testeetetre
         playerDistanceDescription = "Distância a percorrer (m): ";
         finalDistanceOutput = createTextField(playerDistanceDescription, 40, 150, 350, 30, false, false);
 
