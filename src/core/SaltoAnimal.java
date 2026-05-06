@@ -6,7 +6,7 @@ import java.awt.event.*;
 
 public class SaltoAnimal extends JFrame implements ActionListener {
 
-    public static final double GRAVITY = 9.8;
+    public static final double Gravidade = 9.8;
 
     private JTextField alturaInput, tempoInput;
     private JTextField v0Output, vTempoOutput, alturaMaxOutput, tempoMaxOutput;
@@ -123,7 +123,7 @@ public class SaltoAnimal extends JFrame implements ActionListener {
             painelGrafico.reset();
         }
     }
-
+    //realiza todos os calculos e verificações necessarios
     private void calcularSalto(double y, double t) {
 
         if (y <= 0 || t <= 0) {
@@ -131,9 +131,9 @@ public class SaltoAnimal extends JFrame implements ActionListener {
             return;
         }
 
-        double v0 = (y + 0.5 * GRAVITY * t * t) / t;
-        double tMax = v0 / GRAVITY;
-        double yMax = (v0 * v0) / (2 * GRAVITY);
+        double v0 = (y + 0.5 * Gravidade * t * t) / t;
+        double tMax = v0 / Gravidade;
+        double yMax = (v0 * v0) / (2 * Gravidade);
 
         v0Output.setText(String.format("%.3f", v0));
         alturaMaxOutput.setText(String.format("%.3f", yMax));
@@ -155,7 +155,7 @@ public class SaltoAnimal extends JFrame implements ActionListener {
         public void iniciarAnimacao(double v0, double tempoTotal) {
             this.v0 = v0;
             this.tempoTotal = tempoTotal;
-            this.yMax = (v0 * v0) / (2 * GRAVITY);
+            this.yMax = (v0 * v0) / (2 * Gravidade);
             this.tempoAtual = 0;
 
             if (timer != null) timer.stop();
@@ -163,12 +163,12 @@ public class SaltoAnimal extends JFrame implements ActionListener {
             timer = new Timer(40, e -> {
                 tempoAtual += 0.04;
 
-                double v = v0 - GRAVITY * tempoAtual;
+                double v = v0 - Gravidade * tempoAtual;
                 vTempoOutput.setText(String.format("%.3f", v));
 
                 repaint();
 
-                double y = v0 * tempoAtual - 0.5 * GRAVITY * tempoAtual * tempoAtual;
+                double y = v0 * tempoAtual - 0.5 * Gravidade * tempoAtual * tempoAtual;
                 if (y < 0) timer.stop();
             });
 
@@ -201,7 +201,7 @@ public class SaltoAnimal extends JFrame implements ActionListener {
 
             for (int i = 0; i <= N; i++) {
                 double t = i * tempoTotal / N;
-                double y = v0 * t - 0.5 * GRAVITY * t * t;
+                double y = v0 * t - 0.5 * Gravidade * t * t;
 
                 int x = margX + (int)(t / tempoTotal * width);
                 int yPanel = getHeight() - margY - (int)(y / yMax * height);
@@ -212,7 +212,7 @@ public class SaltoAnimal extends JFrame implements ActionListener {
             }
 
             // Ponto animado
-            double yAtual = v0 * tempoAtual - 0.5 * GRAVITY * tempoAtual * tempoAtual;
+            double yAtual = v0 * tempoAtual - 0.5 * Gravidade * tempoAtual * tempoAtual;
 
             if (yAtual >= 0) {
                 int x = margX + (int)(tempoAtual / tempoTotal * width);
@@ -223,7 +223,7 @@ public class SaltoAnimal extends JFrame implements ActionListener {
             }
 
             // Ponto máximo
-            double tMax = v0 / GRAVITY;
+            double tMax = v0 / Gravidade;
             int xMax = margX + (int)(tMax / tempoTotal * width);
             int yMaxPanel = getHeight() - margY - height;
 
