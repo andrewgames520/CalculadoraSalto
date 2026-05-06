@@ -1,3 +1,5 @@
+package core;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -8,8 +10,8 @@ public class SaltoAnimal extends JFrame implements ActionListener {
 
     // Componentes da interface
     private JTextField alturaInput, tempoInput;
-    private JTextField v0Output, vyOutput;
-    private JButton calcularBtn, resetBtn;
+    private JTextField alturaMaxOutput, tempoTotalOutput;
+    private JButton calcularBtn, resetBtn, exemploBtn;
     private GraficoPanel painelGrafico;
 
     // Construtor da interface
@@ -19,55 +21,61 @@ public class SaltoAnimal extends JFrame implements ActionListener {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(null);
 
-        // Label e input da altura máxima
-        JLabel alturaLabel = new JLabel("Altura Máxima (m) [0 < Ymax < 10]:");
-        alturaLabel.setBounds(30, 20, 220, 25);
+        // Label e input da altura no instante t
+        JLabel alturaLabel = new JLabel("Altura no instante t (m) [0 < y < 10]:");
+        alturaLabel.setBounds(30, 20, 240, 25);
         add(alturaLabel);
 
         alturaInput = new JTextField();
-        alturaInput.setBounds(260, 20, 100, 25);
+        alturaInput.setBounds(280, 20, 100, 25);
         add(alturaInput);
 
-        // Label e input do tempo total (ida e volta)
-        JLabel tempoLabel = new JLabel("Tempo Total do Salto (s) [0 < Tmax < 10]:");
-        tempoLabel.setBounds(30, 60, 220, 25);
+        // Label e input do tempo no instante t
+        JLabel tempoLabel = new JLabel("Tempo no instante t (s) [0 < t < 10]:");
+        tempoLabel.setBounds(30, 60, 240, 25);
         add(tempoLabel);
 
         tempoInput = new JTextField();
-        tempoInput.setBounds(260, 60, 100, 25);
+        tempoInput.setBounds(280, 60, 100, 25);
         add(tempoInput);
 
         // Botão calcular
         calcularBtn = new JButton("Calcular");
-        calcularBtn.setBounds(400, 20, 120, 30);
+        calcularBtn.setBounds(420, 20, 120, 30);
         calcularBtn.addActionListener(this);
         add(calcularBtn);
 
+        // Botão exemplo (exercício 44)
+        exemploBtn = new JButton("Exemplo");
+        exemploBtn.setBounds(420, 60, 120, 30);
+        exemploBtn.addActionListener(this);
+        add(exemploBtn);
+
         // Botão reset
         resetBtn = new JButton("Reset");
-        resetBtn.setBounds(400, 60, 120, 30);
+        resetBtn.setBounds(550, 60, 120, 30);
         resetBtn.addActionListener(this);
         add(resetBtn);
 
-        // Saída da velocidade inicial
-        JLabel v0Label = new JLabel("Velocidade Inicial (v₀) [m/s]:");
-        v0Label.setBounds(30, 110, 200, 25);
-        add(v0Label);
+        // Saída da altura máxima
+        JLabel alturaMaxLabel = new JLabel("Altura máxima do salto (m):");
+        alturaMaxLabel.setBounds(30, 110, 240, 25);
+        add(alturaMaxLabel);
 
-        v0Output = new JTextField();
-        v0Output.setBounds(230, 110, 150, 25);
-        v0Output.setEditable(false);
-        add(v0Output);
+        alturaMaxOutput = new JTextField();
+        alturaMaxOutput.setBounds(270, 110, 150, 25);
+        alturaMaxOutput.setEditable(false);
+        add(alturaMaxOutput);
 
-        // Saída da Vy no topo
-        JLabel vyLabel = new JLabel("Velocidade ao atingir Ymax (Vy) [m/s]:");
-        vyLabel.setBounds(30, 150, 250, 25);
-        add(vyLabel);
+        // Saída do tempo total
+        JLabel tempoTotalLabel = new JLabel("Tempo total do salto (s):");
+        tempoTotalLabel.setBounds(30, 150, 240, 25);
+        add(tempoTotalLabel);
 
-        vyOutput = new JTextField("0.0");
-        vyOutput.setBounds(280, 150, 100, 25);
-        vyOutput.setEditable(false);
-        add(vyOutput);
+        tempoTotalOutput = new JTextField();
+        tempoTotalOutput.setBounds(270, 150, 150, 25);
+        tempoTotalOutput.setEditable(false);
+        add(tempoTotalOutput);
 
         // Painel para o gráfico
         painelGrafico = new GraficoPanel();
@@ -82,46 +90,63 @@ public class SaltoAnimal extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == calcularBtn) {
             try {
-                double Ymax = Double.parseDouble(alturaInput.getText());
-                double Tmax = Double.parseDouble(tempoInput.getText());
-
-                // Restrições dos inputs
-                if (Ymax <= 0 || Ymax >= 10) {
-                    mostrarErro("A altura máxima deve ser maior que 0 e menor que 10 metros.");
-                    return;
-                }
-                if (Tmax <= 0 || Tmax >= 10) {
-                    mostrarErro("O tempo total deve ser maior que 0 e menor que 10 segundos.");
-                    return;
-                }
-
-                // Cálculo da velocidade inicial:
-                // Tmax = tempo total de ida e volta => tempo até o topo = Tmax / 2
-                // v0 = g * (Tmax/2)
-                double v0 = GRAVITY * (Tmax / 2);
-
-                // Vy no topo: sempre 0 (velocidade vertical anula na altura máxima)
-                double vy = 0.0;
-
-                // Exibir resultados
-                v0Output.setText(String.format("%.2f", v0));
-                vyOutput.setText(String.format("%.2f", vy));
-
-                // Gerar novo gráfico
-                painelGrafico.setParametros(Ymax, v0, Tmax);
-
+                double y = Double.parseDouble(alturaInput.getText());
+                double t = Double.parseDouble(tempoInput.getText());
+                calcularSalto(y, t);
             } catch (NumberFormatException ex) {
                 mostrarErro("Digite valores numéricos válidos.");
             }
         }
 
+        if (e.getSource() == exemploBtn) {
+            // Valores do exercício 44: y = 0,544 m em t = 0,200 s
+            double y = 0.544;
+            double t = 0.200;
+            alturaInput.setText(String.valueOf(y));
+            tempoInput.setText(String.valueOf(t));
+            calcularSalto(y, t);
+        }
+
         if (e.getSource() == resetBtn) {
             alturaInput.setText("");
             tempoInput.setText("");
-            v0Output.setText("");
-            vyOutput.setText("");
+            alturaMaxOutput.setText("");
+            tempoTotalOutput.setText("");
             painelGrafico.clear();
         }
+    }
+
+    private void calcularSalto(double y, double t) {
+        // Restrições dos inputs
+        if (y <= 0 || y >= 10) {
+            mostrarErro("A altura deve ser maior que 0 e menor que 10 metros.");
+            return;
+        }
+        if (t <= 0 || t >= 10) {
+            mostrarErro("O tempo deve ser maior que 0 e menor que 10 segundos.");
+            return;
+        }
+
+        // Cálculo da velocidade inicial usando y(t) = v0*t - 0.5*g*t^2
+        double v0 = (y + 0.5 * GRAVITY * t * t) / t;
+        if (v0 <= 0) {
+            mostrarErro("Os valores informados não geram um salto válido.");
+            return;
+        }
+
+        // Tempo até o topo do salto e altura máxima
+        double tMax = v0 / GRAVITY;
+        double yMax = (v0 * v0) / (2 * GRAVITY);
+
+        // Tempo total de voo (sobe e desce)
+        double tempoTotal = 2 * tMax;
+
+        // Exibir resultados
+        alturaMaxOutput.setText(String.format("%.3f", yMax));
+        tempoTotalOutput.setText(String.format("%.3f", tempoTotal));
+
+        // Gerar novo gráfico
+        painelGrafico.setParametros(yMax, v0, tempoTotal);
     }
 
     // Método para erros
@@ -131,16 +156,16 @@ public class SaltoAnimal extends JFrame implements ActionListener {
 
     // Painel customizado para desenho do gráfico da altura vs tempo
     class GraficoPanel extends JPanel {
-        private double Ymax = 0;
+        private double yMax = 0;
         private double v0 = 0;
-        private double Tmax = 0;
+        private double tempoTotal = 0;
         private boolean desenhar = false;
 
         // Define os parâmetros para o gráfico
-        public void setParametros(double Ymax, double v0, double Tmax) {
-            this.Ymax = Ymax;
+        public void setParametros(double yMax, double v0, double tempoTotal) {
+            this.yMax = yMax;
             this.v0 = v0;
-            this.Tmax = Tmax;
+            this.tempoTotal = tempoTotal;
             this.desenhar = true;
             repaint();
         }
@@ -174,7 +199,7 @@ public class SaltoAnimal extends JFrame implements ActionListener {
 
             // Amostragem de pontos
             int N = 100; // quantidade de pontos
-            double dt = Tmax / N;
+            double dt = tempoTotal / N;
             int prevX = margX, prevY = getHeight() - margY;
 
             for (int i = 0; i <= N; i++) {
@@ -183,8 +208,8 @@ public class SaltoAnimal extends JFrame implements ActionListener {
                 double y = v0 * t - 0.5 * GRAVITY * t * t;
 
                 // Normalizar para o painel
-                int x = margX + (int) (t / Tmax * width);
-                int yPanel = getHeight() - margY - (int) (y / Ymax * height);
+                int x = margX + (int) (t / tempoTotal * width);
+                int yPanel = getHeight() - margY - (int) (y / yMax * height);
 
                 // Não desenhar pontos fora
                 if (y >= 0) {
